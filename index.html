@@ -4,13 +4,32 @@
     <title>Google Calendar API Quickstart</title>
     <meta charset="utf-8" />
   </head>
+  <style>
+  .spinner {
+
+    animation: rotate 3s infinite ease-out;
+    display: inline-block;
+    color: chocolate;
+    margin-right: 4px;
+    }
+
+    @keyframes rotate {
+    0%    { transform: rotate(0deg); }
+    100%  { transform: rotate(2840deg); }
+    }
+
+  </style>
   <body>
     <p>Google Calendar API Quickstart</p>
 
     <!--Add buttons to initiate auth sequence and sign out-->
     <button id="authorize_button" style="display: none;">Authorize</button>
     <button id="signout_button" style="display: none;">Sign Out</button>
-
+    <div>
+        <span id="loader" class="spinner">∫</span>
+        <span>Checking Google auth...</span>
+    </div>
+    
     <pre id="content" style="white-space: pre-wrap;"></pre>
 
     <script type="text/javascript">
@@ -27,6 +46,7 @@
 
       var authorizeButton = document.getElementById('authorize_button');
       var signoutButton = document.getElementById('signout_button');
+      var loader = document.getElementById('loader');
 
       /**
        *  On load, called to load the auth2 library and API client library.
@@ -40,12 +60,16 @@
        *  listeners.
        */
       function initClient() {
+          
+        loader.style.display = 'block';
+
         gapi.client.init({
           apiKey: API_KEY,
           clientId: CLIENT_ID,
           discoveryDocs: DISCOVERY_DOCS,
           scope: SCOPES
         }).then(function () {
+            loader.style.display = 'none';
           // Listen for sign-in state changes.
           gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
 
@@ -54,6 +78,7 @@
           authorizeButton.onclick = handleAuthClick;
           signoutButton.onclick = handleSignoutClick;
         }, function(error) {
+            loader.style.display = 'none';
           appendPre(JSON.stringify(error, null, 2));
         });
       }
