@@ -898,6 +898,24 @@
 
     <pre id="content" style="white-space: pre-wrap;"></pre>
 
+    <form id="text-form" style="display: none;">
+        
+
+        <label for="textToMemorize">Text to memorize</label>
+        <textarea class="u-full-width"
+            placeholder="Enter text"
+            id="textToMemorize"></textarea>
+        <label class="example-send-yourself-copy">
+            <input type="checkbox">
+            <span class="label-body">Tomorrow</span>
+        </label>
+        <input class="button-primary"
+            id="submit-button"
+            type="button"
+            value="Submit to Google calendar">
+    </form>
+
+
   </div>
 </div>
 
@@ -912,10 +930,12 @@
 
     // Authorization scopes required by the API; multiple scopes can be
     // included, separated by spaces.
-    const SCOPES = "https://www.googleapis.com/auth/calendar";
+    const SCOPES = "https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events";
 
     var authorizeButton = document.getElementById('authorize_button');
     var signoutButton = document.getElementById('signout_button');
+    var submitButton = document.getElementById('submit-buttom');
+    var textForm = document.getElementById('text-form');
     var loader = document.getElementById('loader');
 
     /**
@@ -945,6 +965,7 @@
             updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
             authorizeButton.onclick = handleAuthClick;
             signoutButton.onclick = handleSignoutClick;
+            submitButton.onclick = submitEvents;
         }, function (error) {
             appendPre(JSON.stringify(error, null, 2));
           loader.style.display = 'none';
@@ -960,11 +981,13 @@
         if (isSignedIn) {
             authorizeButton.style.display = 'none';
             signoutButton.style.display = 'block';
+            textForm.style.display = 'block';
             // listUpcomingEvents();
           listCalendarsList();
         } else {
             authorizeButton.style.display = 'block';
             signoutButton.style.display = 'none';
+            textForm.style.display = 'none';
         }
         console.log('loader', loader)
         loader.style.display = 'none';
@@ -1056,6 +1079,47 @@
         }
       });
     }
+
+
+    function submitEvents() {
+        const text = document.getElementById('textToMemorize');
+        const today = new Date();
+        var event = {
+            'summary': 'CoF: ' + text.value.substr(0, 50) + '...',
+            'description': text.value,
+            'start': {
+                'dateTime': new Date(+today + 1000*60*60*24).toISOString(),
+            },
+            'end': {
+                'dateTime': new Date(+today + 1000*(60*70*24)).toISOString(),
+            },
+            'reminders': {
+                'useDefault': false,
+                'overrides': [
+                    {'method': 'popup', 'minutes': 10}
+                ]
+            }
+        };
+
+        var request = gapi.client.calendar.events.insert({
+            'calendarId': 'primary',
+            'resource': event
+        });
+
+        request.execute((event) => {
+            alert('success!')
+        // appendPre('Event created: ' + event.htmlLink);
+        });
+
+    }
+
+
+
+// Refer to the JavaScript quickstart on how to setup the environment:
+// https://developers.google.com/calendar/quickstart/js
+// Change the scope to 'https://www.googleapis.com/auth/calendar' and delete any
+// stored credentials.
+
 
 
 </script>
