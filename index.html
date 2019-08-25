@@ -898,17 +898,35 @@
 
     <pre id="content" style="white-space: pre-wrap;"></pre>
 
-    <form id="text-form" style="display: none;">
+    <form id="text-form" style="display: block;">
         
 
         <label for="textToMemorize">Text to memorize</label>
         <textarea class="u-full-width"
             placeholder="Enter text"
             id="textToMemorize"></textarea>
-        <label class="example-send-yourself-copy">
-            <input type="checkbox">
-            <span class="label-body">Tomorrow</span>
-        </label>
+          <label>Remind me in</label>
+          <label>
+            <input type="checkbox" checked id="checkbox1">
+            <span class="label-body">20 minutes</span>
+          </label>
+          <label>
+            <input type="checkbox" checked id="checkbox2">
+            <span class="label-body">1 day</span>
+          </label>
+          <label>
+            <input type="checkbox" checked id="checkbox3">
+            <span class="label-body">2 weeks</span>
+          </label>
+          <label>
+            <input type="checkbox" checked id="checkbox4">
+            <span class="label-body">2 month</span>
+          </label>
+          <label>
+            <input type="checkbox" checked id="checkbox5">
+            <span class="label-body">1 year</span>
+          </label>
+
         <input class="button-primary"
             id="submit-button"
             type="button"
@@ -982,8 +1000,6 @@
             authorizeButton.style.display = 'none';
             signoutButton.style.display = 'block';
             textForm.style.display = 'block';
-            // listUpcomingEvents();
-          listCalendarsList();
         } else {
             authorizeButton.style.display = 'block';
             signoutButton.style.display = 'none';
@@ -1019,97 +1035,63 @@
         pre.appendChild(textContent);
     }
 
-    /**
-     * Print the summary and start datetime/date of the next ten events in
-     * the authorized user's calendar. If no events are found an
-     * appropriate message is printed.
-     */
-    function listUpcomingEvents() {
-        gapi.client.calendar.events.list({
-            'calendarId': 'primary',
-            'timeMin': (new Date()).toISOString(),
-            'showDeleted': false,
-            'singleEvents': true,
-            'maxResults': 10,
-            'orderBy': 'startTime'
-        }).then(function (response) {
-            var events = response.result.items;
-            appendPre('Upcoming events:');
-
-            if (events.length > 0) {
-                for (i = 0; i < events.length; i++) {
-                    var event = events[i];
-                    var when = event.start.dateTime;
-                    if (!when) {
-                        when = event.start.date;
-                    }
-                    appendPre(event.summary + ' (' + when + ')')
-                }
-            } else {
-                appendPre('No upcoming events found.');
-            }
-        });
+    function getDate(sec) {
+      const today = new Date();
+      return new Date(+today + 1000*(60*60*24 + (sec || 0))).toISOString();
     }
 
-    function listCalendarsList() {
-      console.log('client log: ', gapi.client)
-      gapi.client.calendar.calendarList.list({
-        // 'calendarId': 'primary',
-        // 'timeMin': (new Date()).toISOString(),
-        // 'showDeleted': false,
-        // 'singleEvents': true,
-        // 'maxResults': 10,
-        // 'orderBy': 'startTime'
-      }).then(function(response) {
-        var calList = response.result.items;
-        appendPre('CalendarList:');
-
-        if (calList.length > 0) {
-          for (i = 0; i < calList.length; i++) {
-            var calendar = calList[i];
-            console.log(calendar)
-            // var when = calendar.start.dateTime;
-            // if (!when) {
-            //   when = event.start.date;
-            // }
-            appendPre(JSON.stringify(calendar, null, 2));
-          }
-        } else {
-          appendPre('No calendars found.');
-        }
-      });
-    }
-
-
-    function submitEvents() {
-        const text = document.getElementById('textToMemorize');
-        const today = new Date();
-        var event = {
-            'summary': 'CoF: ' + text.value.substr(0, 50) + '...',
-            'description': text.value,
+    function genEvent(sec, text) {
+      return {
+            'summary': '⊕ ' + text.length > 50 
+              ? text.substr(0, 50) + '...' 
+              : text,
+            'description': text,
             'start': {
-                'dateTime': new Date(+today + 1000*60*60*24).toISOString(),
+                'dateTime': getDate(sec),
             },
             'end': {
-                'dateTime': new Date(+today + 1000*(60*70*24)).toISOString(),
+                'dateTime': getDate(sec + 10*60),
             },
             'reminders': {
                 'useDefault': false,
                 'overrides': [
-                    {'method': 'popup', 'minutes': 10}
+                    {'method': 'popup', 'minutes': 2}
                 ]
             }
         };
+    }
 
-        var request = gapi.client.calendar.events.insert({
-            'calendarId': 'primary',
-            'resource': event
-        });
+    function submitEvents() {
+        const textEl = document.getElementById('textToMemorize');
+        const today = new Date();
 
-        request.execute((event) => {
-            alert('success!')
-            appendPre('Event created: ' + event.htmlLink);
-        });
+        const DAY = 24*3600;
+
+        const secOffsets = [
+          60*20,
+          DAY + 60*20,
+          DAY*12 + DAY + 60*20,
+          DAY*62 + DAY*12 + DAY + 60*20,
+          DAY*365 + DAY*62 + DAY*12 + DAY + 60*20,
+        ];
+
+        for (var i = 1; i < 6; i++) {
+          if (document.getElementById('checkbox' + i).checked = true) {
+            const event = genEvent(secOffsets[i - 1], textEl.value);
+
+            const request = gapi.client.calendar.events.insert({
+                'calendarId': 'primary',
+                'resource': event
+            });
+
+            request.execute((event) => {
+                appendPre('Event created: ' + event.htmlLink);
+            });
+          }
+        }
+
+        textEl.value = '';
+
 
     }
 
