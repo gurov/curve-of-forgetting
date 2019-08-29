@@ -5,7 +5,7 @@
 
 The _forgetting curve_ hypothesizes the decline of memory retention in time. This curve shows how information is lost over time when there is no attempt to retain it.
 
-![A typical representation of forgetting curves](https://gurov.github.io/curve-of-forgetting/assets/200px-ForgettingCurve.svg)
+![A typical representation of forgetting curves](https://gurov.github.io/curve-of-forgetting/assets/200px-ForgettingCurve.png)
 
 <a target="_blank" href="https://en.wikipedia.org/wiki/Forgetting_curve">Read more</a> about forgetting curve on Wiki.
 
