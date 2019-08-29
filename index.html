@@ -14,7 +14,7 @@
 
 
     <meta name="description"
-    content="Curve of Forgetting is an application for adding to the calendar of events in a special order for memorizing texts by heart.">
+    content="Curve of Forgetting is an application for adding events to you Google calendar in a special order for memorizing texts by heart.">
     <meta name="author" content="Pavel Gurov <lucius.gu@gmail.com>">
     <meta charset="utf-8"/>
 
@@ -66,6 +66,7 @@
     }
     pre {
         background-color: antiquewhite;
+        white-space: pre-wrap;
     }
 </style>
 <body>
@@ -79,12 +80,10 @@
             <b class="header-title">Curve of&nbsp;Forgetting</b>
         </header>
         <p>
-            Curve of Forgetting is an application for adding to the calendar of events in a special order for memorizing texts by heart.
+            Curve of Forgetting is an application for adding events to <b>you Google calendar</b> in a special order for memorizing texts by heart.
             <br>
-            <a target="_blank" href="https://en.wikipedia.org/wiki/Forgetting_curve">Read more</a>
-             about forgetting curve on Wiki.
+            <a target="_blank" href="https://en.wikipedia.org/wiki/Forgetting_curve">Read more</a> about forgetting curve on Wiki.
         </p>
-        <hr>
 
         <button id="authorize_button" class="w-100" style="display: none;">Authorize</button>
 
@@ -93,11 +92,7 @@
             <span>Checking Google auth...</span>
         </div>
 
-        <pre id="content" style="white-space: pre-wrap;"></pre>
-
-        <ul id="events">
-
-        </ul>
+        <pre id="content"></pre>
 
         <form id="text-form" style="display: none;">
 
@@ -136,7 +131,7 @@
 
         <hr>
         <footer>
-            <a target="_blank" href="https://github.com/gurov/curve-of-forgetting">Github</a>
+            <a target="_blank" href="https://github.com/gurov/curve-of-forgetting">Github source code</a>
             <button id="signout_button">Sign Out</button>
         </footer>
 
