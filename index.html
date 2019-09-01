@@ -261,7 +261,8 @@
     function submitEvents() {
         const textEl = document.getElementById('textToMemorize');
         if (textEl.value.length < 1) {
-            alert('The text is too short.');
+            alert('The text is too short');
+            return;
         }
         loader.style.display = 'block';
 
