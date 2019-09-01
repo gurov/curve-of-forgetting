@@ -14,7 +14,7 @@
 
 
     <meta name="description"
-    content="Curve of Forgetting is an application for adding events to you Google calendar in a special order for memorizing texts by heart.">
+    content="Curve of Forgetting is an app that helps you memorize text by heart. It adds events to your Google Calendar in a special order to memorize text with a minimum number of repetitions.">
     <meta name="author" content="Pavel Gurov <lucius.gu@gmail.com>">
     <meta charset="utf-8"/>
 
@@ -81,18 +81,27 @@
             <b class="header-title">Curve of&nbsp;Forgetting</b>
         </header>
         <p>
-            Curve of Forgetting is an application for adding events to <b>you Google calendar</b> in a special order for memorizing texts by heart.
+            <b>CoF</b> is an app that helps you memorize text by heart.<br>
+            It adds events to <b>your Google Calendar</b> in a special order to memorize text with a minimum number of repetitions.
             <br>
             <a target="_blank" href="https://en.wikipedia.org/wiki/Forgetting_curve">Read more</a> about forgetting curve on Wiki.
+        </p>
+        <blockquote id="blockquote">
+            <div><i>I just could not learn the English word "kind". Every time I had to learn its meaning again, so I solved the problem as a programmer - I wrote a program for memorization.</i></div>
+            <div>— Program Author</div>
+        </blockquote>
+        <p>
+                
         </p>
 
         <button id="authorize_button" class="w-100" style="display: none;">Authorize</button>
 
         <div style="display: none;" id="loader">
             <span class="spinner">∫</span>
-            <span>Checking Google auth...</span>
+            <span>Some async events...</span>
         </div>
 
+        <div id="events"></div>
         <pre id="content"></pre>
 
         <form id="text-form" style="display: none;">
@@ -150,6 +159,7 @@
     const SCOPES = "https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events";
 
     var authorizeButton = document.getElementById('authorize_button');
+    var blockquote = document.getElementById('blockquote');
     var signoutButton = document.getElementById('signout_button');
     var submitButton = document.getElementById('submit-button');
     var textForm = document.getElementById('text-form');
@@ -184,6 +194,7 @@
             authorizeButton.style.display = 'none';
             signoutButton.style.display = 'block';
             textForm.style.display = 'block';
+            blockquote.style.display = 'none';
         } else {
             authorizeButton.style.display = 'block';
             signoutButton.style.display = 'none';
@@ -206,9 +217,9 @@
         pre.appendChild(textContent);
     }
 
-    function appendLi(date, link) {
+    function appendSuccess(date, link) {
         const eventsDiv = document.getElementById('events');
-
+        const t = document.createTextNode('Event created: ');;
         const a = document.createElement('a');
         const linkText = document.createTextNode(date);
         a.appendChild(linkText);
@@ -216,6 +227,7 @@
         a.target = "_blank";
         const br = document.createElement('br');
 
+        eventsDiv.appendChild(t);
         eventsDiv.appendChild(a);
         eventsDiv.appendChild(br);
     }
@@ -227,9 +239,9 @@
 
     function genEvent(sec, text) {
         return {
-            'summary': 'CoF ' + text.length > 47
-                ? text.substr(0, 47) + '...'
-                : text,
+            'summary': text.length > 47
+                ? '➠ ' + text.substr(0, 47) + '...'
+                : '➠ ' + text,
             'description': text,
             'start': {
                 'dateTime': getISODate(sec),
@@ -248,6 +260,10 @@
 
     function submitEvents() {
         const textEl = document.getElementById('textToMemorize');
+        if (textEl.value.length < 1) {
+            alert('The text is too short.');
+        }
+        loader.style.display = 'block';
 
         const DAY = 24 * 3600;
 
@@ -259,17 +275,23 @@
             DAY * 365 + DAY * 62 + DAY * 12 + DAY + 60 * 20,
         ];
 
+        let loaderCounter = 0;
+
         for (let i = 1; i < 6; i++) {
             if (document.getElementById('checkbox' + i).checked) {
                 const event = genEvent(secOffsets[i - 1], textEl.value);
-
                 const request = gapi.client.calendar.events.insert({
                     'calendarId': 'primary',
                     'resource': event
                 });
+                loaderCounter = loaderCounter + 1;
 
                 request.execute((event) => {
-                    appendLi('Event created: ' + event.start.dateTime, event.htmlLink)
+                    loaderCounter = loaderCounter - 1;
+                    if (loaderCounter < 1) {
+                        loader.style.display = 'none';
+                    }
+                    appendSuccess(event.start.dateTime, event.htmlLink)
                 });
             }
         }
