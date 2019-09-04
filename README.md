@@ -16,9 +16,9 @@ The _forgetting curve_ hypothesizes the decline of memory retention in time. Thi
 
 ## App appearance 
 
-![Curve of Forgetting appearance](https://gurov.github.io/curve-of-forgetting/assets/cof-screenshot1.png)
+![Curve of Forgetting appearance](https://gurov.github.io/curve-of-forgetting/assets/cof-screenshot1.jpg)
 
-![Curve of Forgetting appearance](https://gurov.github.io/curve-of-forgetting/assets/cof-screenshot2.png)
+![Curve of Forgetting appearance](https://gurov.github.io/curve-of-forgetting/assets/cof-screenshot2.jpg)
 
 
 Try it [here](https://gurov.github.io/curve-of-forgetting/)
