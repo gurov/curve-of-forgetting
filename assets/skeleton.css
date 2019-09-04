@@ -302,11 +302,11 @@ p {
 /* Links
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 a {
-    color: #1EAEDB;
+    color: #3D7DBF;
 }
 
 a:hover {
-    color: #0FA0CE;
+    color: #0B4B8D;
 }
 
 
@@ -371,8 +371,8 @@ input[type="submit"].button-primary:focus,
 input[type="reset"].button-primary:focus,
 input[type="button"].button-primary:focus {
     color: #FFF;
-    background-color: #1EAEDB;
-    border-color: #1EAEDB;
+    background-color: #3D7DBF;
+    border-color: #3D7DBF;
 }
 
 

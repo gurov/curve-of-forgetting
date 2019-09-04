@@ -1,0 +1,47 @@
+.w-100 {
+    width: 100%;
+}
+.spinner {
+
+    animation: rotate 3s infinite ease-out;
+    display: inline-block;
+    color: chocolate;
+    margin-right: 4px;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(2840deg);
+    }
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+}
+header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.header-title {
+    /* font-size: 2rem; */
+    margin-left: 1rem;
+}
+#authorize_button {
+    line-height: 38px;
+    height: 38px;
+}
+pre {
+    background-color: antiquewhite;
+    white-space: pre-wrap;
+    margin-bottom: 0.5rem;
+}
+blockquote {
+    margin: 0 0.5rem;
+}
