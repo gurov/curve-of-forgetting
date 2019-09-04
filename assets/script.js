@@ -38,7 +38,7 @@ function updateSigninStatus(isSignedIn) {
         document.getElementById('text-form').toggleAttribute('hidden', false);
         document.getElementById('blockquote').toggleAttribute('hidden', true);
     } else {
-        authorizeButton.toggleAttribute('hidden', false);
+        document.getElementById('authorize_button').toggleAttribute('hidden', false);
         document.getElementById('signout_button').toggleAttribute('hidden', true);
         document.getElementById('text-form').toggleAttribute('hidden', true);
     }
